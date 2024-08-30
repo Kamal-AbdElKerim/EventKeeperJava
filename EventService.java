@@ -40,6 +40,7 @@ public class EventService {
     }
 
     public List<Event> searchEventsByCriteria(String date, String location, String type) {
+        System.out.println(date);
         return events.stream()
                 .filter(event -> (date == null || event.getDate().toString().equals(date)) &&
                         (location == null || event.getLocation().equals(location)) &&

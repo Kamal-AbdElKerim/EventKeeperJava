@@ -102,7 +102,7 @@ public class ConsoleInterface {
             System.out.println("1. Inscrire un participant à un événement");
             System.out.println("2. Désinscrire un participant d'un événement");
             System.out.println("3. Afficher les événements auxquels un participant est inscrit");
-            System.out.println("4. Back to Main Menu");
+            System.out.println("4. Search Events");
             System.out.println("5. Logout");
             System.out.print("Choose an option : ");
             int choice = Integer.parseInt(scanner.nextLine());
@@ -112,16 +112,17 @@ public class ConsoleInterface {
                     registerParticipant();
                     break;
                 case 2:
-                    listEvents();
+                    removeParticipantEvents();
                     break;
                 case 3:
                     listEventsForParticipant();
                     break;
                 case 4:
-                    return;
+                    searchEvents();
+                    break;
                 case 5:
-                    authentication();
                     return;
+
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -135,8 +136,8 @@ public class ConsoleInterface {
             System.out.println("2. Update Event");
             System.out.println("3. Delete Event");
             System.out.println("4. List Events");
-            // System.out.println("5. Search Events");
-            System.out.println("5. Back to Main Menu");
+            System.out.println("5. Search Events");
+            System.out.println("6. Back to Main Menu");
             System.out.print("Choose an option: ");
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -154,7 +155,11 @@ public class ConsoleInterface {
                     listEvents();
                     break;
                 case 5:
+                    searchEvents();
+                    break;
+                case 6:
                     return;
+
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -380,28 +385,9 @@ public class ConsoleInterface {
         System.out.println("Participant registered to event successfully.");
     }
 
-    // private void unregisterParticipantFromEvent() {
-    // System.out.print("Enter Event ID: ");
-    // String eventId = scanner.nextLine();
-    // System.out.print("Enter Participant ID: ");
-    // String participantId = scanner.nextLine();
-
-    // registrationService.unregisterParticipantFromEvent(eventId, participantId);
-    // System.out.println("Participant unregistered from event successfully.");
-    // }
-
-    // private void listParticipantsOfEvent() {
-    // System.out.print("Enter Event ID: ");
-    // String eventId = scanner.nextLine();
-    // List<Participant> participants =
-    // registrationService.listEventParticipants(eventId, participantService);
-    // participants.forEach(System.out::println);
-    // }
-
     private void listEventsForParticipant() {
 
         List<Registration> registrations = registrationService.listParticipantEvents(participant_Id);
-        System.out.println("Registrations: " + registrations);
 
         Set<Integer> uniqueEventIds = registrations.stream()
                 .map(Registration::getEventId)
@@ -409,10 +395,17 @@ public class ConsoleInterface {
 
         List<Event> filteredEvents = eventService.filterEventsById(new ArrayList<>(uniqueEventIds));
 
-        System.out.println("Filtered Events: " + filteredEvents);
+        System.out.println("Events for you : " + filteredEvents);
 
     }
 
+    private void removeParticipantEvents() {
+        listEventsForParticipant();
+        System.out.print("Enter Event ID: ");
+        int eventId = Integer.parseInt(scanner.nextLine());
+        registrationService.removeParticipantEvents(eventId, participant_Id);
+        System.out.println("event removed successfully.");
 
+    }
 
 }
