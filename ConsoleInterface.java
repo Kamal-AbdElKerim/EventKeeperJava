@@ -1,18 +1,19 @@
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.text.ParseException;
 import java.util.Scanner;
-
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ConsoleInterface {
     private EventService eventService;
     private ParticipantService participantService;
     private RegistrationService registrationService;
     private Scanner scanner;
-
-    
+    private int participant_Id;
 
     public ConsoleInterface() {
         this.eventService = new EventService();
@@ -35,7 +36,7 @@ public class ConsoleInterface {
                     RoleAdmin();
                     break;
                 case 2:
-                    RoleUser();
+                    authentication();
                     break;
                 case 3:
                     System.out.println("Exiting...");
@@ -44,7 +45,7 @@ public class ConsoleInterface {
                     System.out.println("Invalid choice. Please try again.");
             }
         }
-  
+
     }
 
     private void RoleAdmin() {
@@ -78,9 +79,53 @@ public class ConsoleInterface {
 
     }
 
-    private void RoleUser() {
-     
+    private void authentication() {
+        System.out.print("Enter your email: ");
+        String email = scanner.nextLine();
 
+        Participant participant = participantService.Login(email);
+
+        while (participant == null) {
+            System.out.println("Email is invalid");
+            System.out.print("Enter your email: ");
+            email = scanner.nextLine();
+            participant = participantService.Login(email);
+        }
+        // System.out.println(participant.getId());
+        this.participant_Id = participant.getId();
+        RoleUser();
+    }
+
+    private void RoleUser() {
+        while (true) {
+            System.out.println("Welcome User:");
+            System.out.println("1. Inscrire un participant à un événement");
+            System.out.println("2. Désinscrire un participant d'un événement");
+            System.out.println("3. Afficher les événements auxquels un participant est inscrit");
+            System.out.println("4. Back to Main Menu");
+            System.out.println("5. Logout");
+            System.out.print("Choose an option : ");
+            int choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+                case 1:
+                    registerParticipant();
+                    break;
+                case 2:
+                    listEvents();
+                    break;
+                case 3:
+                    listEventsForParticipant();
+                    break;
+                case 4:
+                    return;
+                case 5:
+                    authentication();
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
     }
 
     private void manageEvents() {
@@ -148,72 +193,8 @@ public class ConsoleInterface {
         }
     }
 
-    // private void manageRegistrations() {
-    //     while (true) {
-    //         System.out.println("Manage Participants:");
-    //         System.out.println("1. Register Participant");
-    //         System.out.println("2. Update Participant");
-    //         System.out.println("3. Delete Participant");
-    //         System.out.println("4. List Participant");
-    //         System.out.println("5. Back to Main Menu");
-    //         System.out.print("Choose an option: ");
-    //         int choice = Integer.parseInt(scanner.nextLine());
-
-    //         switch (choice) {
-    //             case 1:
-    //                 registerParticipant();
-    //                 break;
-    //             case 2:
-    //                 // UpdateParticipant();
-    //                 break;
-    //             case 3:
-    //                 // DeleteParticipant();
-    //                 break;
-    //             case 4:
-    //                 // listParticipants();
-    //                 break;
-    //             case 5:
-    //                 return;
-    //             default:
-    //                 System.out.println("Invalid choice. Please try again.");
-    //         }
-    //     }
-    // }
-
-    // private void manageRegistrations() {
-    //     while (true) {
-    //         System.out.println("Registration Management:");
-    //         System.out.println("1. Register Participant to Event");
-    //         System.out.println("2. Unregister Participant from Event");
-    //         System.out.println("3. List Participants of Event");
-    //         System.out.println("4. List Events for a Participant");
-    //         System.out.println("5. Back to Main Menu");
-    //         System.out.print("Choose an option: ");
-    //         int choice = Integer.parseInt(scanner.nextLine());
-
-    //         switch (choice) {
-    //             case 1:
-    //                 registerParticipantToEvent();
-    //                 break;
-    //             case 2:
-    //                 unregisterParticipantFromEvent();
-    //                 break;
-    //             case 3:
-    //                 listParticipantsOfEvent();
-    //                 break;
-    //             case 4:
-    //                 listEventsForParticipant();
-    //                 break;
-    //             case 5:
-    //                 return;
-    //             default:
-    //                 System.out.println("Invalid choice. Please try again.");
-    //         }
-    //     }
-    // }
-
     private void addEvent() {
-       
+
         System.out.print("Enter Event Name: ");
         String name = scanner.nextLine();
         System.out.print("Enter Event Date (yyyy-MM-dd): ");
@@ -225,10 +206,10 @@ public class ConsoleInterface {
 
         try {
             Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-            Event event = new Event( name, date, location, type);
+            Event event = new Event(name, date, location, type);
             eventService.addEvent(event);
             System.out.println("Event added successfully.");
-           
+
         } catch (Exception e) {
             System.out.println("Invalid date format.");
         }
@@ -241,7 +222,6 @@ public class ConsoleInterface {
 
         Event event = eventService.getEventById(id);
 
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(false);
 
@@ -251,14 +231,13 @@ public class ConsoleInterface {
         String newName = scanner.nextLine();
         if (newName.trim().isEmpty()) {
             newName = event.getName();
-            
-        } 
+
+        }
 
         // Update Event Date
         Date newDate = event.getDate(); // Default to current date
-       
-        boolean isData = true ;
-   
+
+        boolean isData = true;
 
         while (isData) {
             System.out.print("Enter new Event Date (yyyy-MM-dd) or press Enter to keep the current date: ");
@@ -267,7 +246,7 @@ public class ConsoleInterface {
                 try {
                     newDate = dateFormat.parse(dateStr);
                     isData = false;
-                    
+
                 } catch (ParseException e) {
                     System.out.println("Invalid date format. Please enter the date in yyyy-MM-dd format.");
                 }
@@ -275,21 +254,20 @@ public class ConsoleInterface {
                 isData = false;
             }
         }
-     
 
         // Update Event Location
         System.out.print("Enter new Event Location or press Enter to keep the current location: ");
         String newLocation = scanner.nextLine();
         if (newLocation.trim().isEmpty()) {
             newLocation = event.getLocation();
-        } 
+        }
 
         // Update Event Type
         System.out.print("Enter new Event Type or press Enter to keep the current type: ");
         String newType = scanner.nextLine();
         if (newType.trim().isEmpty()) {
             newType = event.getType();
-        } 
+        }
 
         // Update the Event
         try {
@@ -299,7 +277,7 @@ public class ConsoleInterface {
         } catch (Exception e) {
             System.out.println("An error occurred while updating the event: " + e.getMessage());
         }
-    
+
     }
 
     private void deleteEvent() {
@@ -315,7 +293,6 @@ public class ConsoleInterface {
         System.out.println("List of events:");
         events.forEach(event -> System.out.println(event));
     }
-    
 
     private void searchEvents() {
         System.out.print("Enter Event Date (yyyy-MM-dd) [leave blank to skip]: ");
@@ -328,8 +305,7 @@ public class ConsoleInterface {
         List<Event> events = eventService.searchEventsByCriteria(
                 date.isEmpty() ? null : date,
                 location.isEmpty() ? null : location,
-                type.isEmpty() ? null : type
-        );
+                type.isEmpty() ? null : type);
         events.forEach(System.out::println);
     }
 
@@ -339,16 +315,16 @@ public class ConsoleInterface {
         String name = scanner.nextLine();
         while (name.trim().isEmpty()) {
             System.out.print("Enter Participant Name (is Required): ");
-            name = scanner.nextLine(); 
+            name = scanner.nextLine();
         }
         System.out.print("Enter Participant Email: ");
         String email = scanner.nextLine();
         while (email.trim().isEmpty()) {
             System.out.print("Enter Participant Email (is Required): ");
-            email = scanner.nextLine(); 
+            email = scanner.nextLine();
         }
 
-        Participant participant = new Participant( name.trim(), email.trim());
+        Participant participant = new Participant(name.trim(), email.trim());
         participantService.addParticipant(participant);
         System.out.println("Participant added successfully.");
     }
@@ -359,26 +335,25 @@ public class ConsoleInterface {
         int id = Integer.parseInt(scanner.nextLine());
         Participant participant = participantService.getParticipantById(id);
 
-         // Update Participant Name
-         System.out.println("Current Participant Name: " + participant.getName());
-         System.out.print("Enter new Participant Name (or press Enter to keep the current name): ");
-         String name = scanner.nextLine();
-         if (name.trim().isEmpty()) {
+        // Update Participant Name
+        System.out.println("Current Participant Name: " + participant.getName());
+        System.out.print("Enter new Participant Name (or press Enter to keep the current name): ");
+        String name = scanner.nextLine();
+        if (name.trim().isEmpty()) {
             name = participant.getName();
-             
-         } 
 
-             // Update Participant email
-            System.out.println("Current Participant email: " + participant.getEmail());
-            System.out.print("Enter new Participant email (or press Enter to keep the current email): ");
-            String email = scanner.nextLine();
-            if (email.trim().isEmpty()) {
-                email = participant.getEmail();
+        }
 
-            } 
+        // Update Participant email
+        System.out.println("Current Participant email: " + participant.getEmail());
+        System.out.print("Enter new Participant email (or press Enter to keep the current email): ");
+        String email = scanner.nextLine();
+        if (email.trim().isEmpty()) {
+            email = participant.getEmail();
 
+        }
 
-        Participant updatedParticipant = new Participant( name, email);
+        Participant updatedParticipant = new Participant(name, email);
         participantService.updateParticipant(id, updatedParticipant);
         System.out.println("Participant updated successfully.");
     }
@@ -397,36 +372,47 @@ public class ConsoleInterface {
     }
 
     private void registerParticipant() {
+        listEvents();
         System.out.print("Enter Event ID: ");
-        String eventId = scanner.nextLine();
-        System.out.print("Enter Participant ID: ");
-        String participantId = scanner.nextLine();
+        int eventId = Integer.parseInt(scanner.nextLine());
 
-        registrationService.registerParticipantToEvent(eventId, participantId);
+        registrationService.registerParticipantToEvent(eventId, participant_Id);
         System.out.println("Participant registered to event successfully.");
     }
 
-    private void unregisterParticipantFromEvent() {
-        System.out.print("Enter Event ID: ");
-        String eventId = scanner.nextLine();
-        System.out.print("Enter Participant ID: ");
-        String participantId = scanner.nextLine();
+    // private void unregisterParticipantFromEvent() {
+    // System.out.print("Enter Event ID: ");
+    // String eventId = scanner.nextLine();
+    // System.out.print("Enter Participant ID: ");
+    // String participantId = scanner.nextLine();
 
-        registrationService.unregisterParticipantFromEvent(eventId, participantId);
-        System.out.println("Participant unregistered from event successfully.");
-    }
+    // registrationService.unregisterParticipantFromEvent(eventId, participantId);
+    // System.out.println("Participant unregistered from event successfully.");
+    // }
 
-    private void listParticipantsOfEvent() {
-        System.out.print("Enter Event ID: ");
-        String eventId = scanner.nextLine();
-        List<Participant> participants = registrationService.listEventParticipants(eventId, participantService);
-        participants.forEach(System.out::println);
-    }
+    // private void listParticipantsOfEvent() {
+    // System.out.print("Enter Event ID: ");
+    // String eventId = scanner.nextLine();
+    // List<Participant> participants =
+    // registrationService.listEventParticipants(eventId, participantService);
+    // participants.forEach(System.out::println);
+    // }
 
     private void listEventsForParticipant() {
-        System.out.print("Enter Participant ID: ");
-        String participantId = scanner.nextLine();
-        List<Event> events = registrationService.listParticipantEvents(participantId, eventService);
-        events.forEach(System.out::println);
+
+        List<Registration> registrations = registrationService.listParticipantEvents(participant_Id);
+        System.out.println("Registrations: " + registrations);
+
+        Set<Integer> uniqueEventIds = registrations.stream()
+                .map(Registration::getEventId)
+                .collect(Collectors.toSet());
+
+        List<Event> filteredEvents = eventService.filterEventsById(new ArrayList<>(uniqueEventIds));
+
+        System.out.println("Filtered Events: " + filteredEvents);
+
     }
+
+
+
 }

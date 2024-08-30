@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Arrays;
 
 public class EventService {
     private List<Event> events;
@@ -51,4 +50,12 @@ public class EventService {
     public List<Event> listEvents() {
         return new ArrayList<>(events);
     }
+    
+    public List<Event> filterEventsById(List<Integer> eventIds) {
+        return events.stream()
+                     .filter(event -> eventIds.contains(event.getId()))
+                     .collect(Collectors.toList());
+    }
+    
+    
 }

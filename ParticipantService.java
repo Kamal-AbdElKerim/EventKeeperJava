@@ -8,6 +8,15 @@ public class ParticipantService {
         this.participants = new ArrayList<>();
     }
 
+    public Participant Login(String email) {
+        for (Participant participant : participants) {
+            if (participant.getEmail().equals(email)) {
+                return participant;
+            }
+        }
+        return null;
+    }
+
     public void addParticipant(Participant participant) {
         participants.add(participant);
     }

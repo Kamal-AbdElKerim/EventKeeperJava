@@ -1,17 +1,22 @@
 public class Registration {
-    private String eventId;
-    private String participantId;
+    private int eventId;
+    private int participantId;
 
-    public Registration(String eventId, String participantId) {
+    public Registration(int eventId, int participantId) {
         this.eventId = eventId;
         this.participantId = participantId;
     }
 
-    public String getEventId() {
+    public int getEventId() {
         return eventId;
     }
 
-    public String getParticipantId() {
+    public int getParticipantId() {
         return participantId;
+    }
+
+    @Override
+    public String toString() {
+        return "Event ID: " + eventId + ", Participant ID: " + participantId;
     }
 }
