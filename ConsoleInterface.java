@@ -434,28 +434,30 @@ public class ConsoleInterface {
 
     private void rapports() {
         List<Registration> registrations = registrationService.listAllRegistrations();
-
+    
         System.out.println("1. Report");
-
-        String[] headers = { "Name Event", "Name Participants" };
-
-        String[][] data = new String[registrations.size()][2];
-
+    
+        String[] headers = { "Name Event", "Date Event", "Name Participants", "Email Participants" };
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    
+        String[][] data = new String[registrations.size()][4];
+    
         for (int i = 0; i < registrations.size(); i++) {
             Registration registration = registrations.get(i);
             data[i][0] = registration.getEvent().getName();
-            data[i][1] = registration.getParticipant().getName();
+            data[i][1] = dateFormat.format(registration.getEvent().getDate()); 
+            data[i][2] = registration.getParticipant().getName();
+            data[i][3] = registration.getParticipant().getEmail();
         }
-
-        System.out.println("--------------------------------------------------");
-        System.out.printf("%-20s %-20s%n", headers[0], headers[1]);
-        System.out.println("--------------------------------------------------");
-
+    
+        System.out.println("---------------------------------------------------------------------------------------------------");
+        System.out.printf("%-20s %-15s %-20s %-30s%n", headers[0], headers[1], headers[2], headers[3]);
+        System.out.println("---------------------------------------------------------------------------------------------------");
+    
         for (String[] row : data) {
-            System.out.printf("%-20s %-20s%n", row[0], row[1]);
+            System.out.printf("%-20s %-15s %-20s %-30s%n", row[0], row[1], row[2], row[3]);
         }
-
-        System.out.println("--------------------------------------------------");
+    
+        System.out.println("---------------------------------------------------------------------------------------------------");
     }
-
 }
