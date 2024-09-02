@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ParticipantService {
     private List<Participant> participants;
@@ -47,4 +48,7 @@ public class ParticipantService {
     public List<Participant> listParticipants() {
         return new ArrayList<>(participants);
     }
+
+
+
 }

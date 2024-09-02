@@ -1,7 +1,6 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.text.ParseException;
 import java.util.Scanner;
@@ -67,7 +66,7 @@ public class ConsoleInterface {
                     manageParticipants();
                     break;
                 case 3:
-                    // manageRegistrations();
+                    rapports();
                     break;
                 case 4:
                     System.out.println("Exiting...");
@@ -198,28 +197,6 @@ public class ConsoleInterface {
         }
     }
 
-    private void addEvent() {
-
-        System.out.print("Enter Event Name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter Event Date (yyyy-MM-dd): ");
-        String dateStr = scanner.nextLine();
-        System.out.print("Enter Event Location: ");
-        String location = scanner.nextLine();
-        System.out.print("Enter Event Type: ");
-        String type = scanner.nextLine();
-
-        try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-            Event event = new Event(name, date, location, type);
-            eventService.addEvent(event);
-            System.out.println("Event added successfully.");
-
-        } catch (Exception e) {
-            System.out.println("Invalid date format.");
-        }
-    }
-
     private void updateEvent() {
         listEvents();
         System.out.print("Enter Event ID to update: ");
@@ -240,7 +217,7 @@ public class ConsoleInterface {
         }
 
         // Update Event Date
-        Date newDate = event.getDate(); // Default to current date
+        Date newDate = event.getDate();
 
         boolean isData = true;
 
@@ -297,6 +274,50 @@ public class ConsoleInterface {
         List<Event> events = eventService.listEvents();
         System.out.println("List of events:");
         events.forEach(event -> System.out.println(event));
+    }
+
+    private void addEvent() {
+        System.out.print("Enter Event Name: ");
+        String name = scanner.nextLine();
+
+        while (name.trim().isEmpty()) {
+            System.out.print("Enter Event Name (is Required): ");
+            name = scanner.nextLine();
+        }
+
+        Date date = null;
+        while (date == null) {
+            System.out.print("Enter Event Date (yyyy-MM-dd): ");
+            String dateStr = scanner.nextLine();
+
+            if (!dateStr.trim().isEmpty()) {
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+                } catch (Exception e) {
+                    System.out.println("Invalid date format. Please try again.");
+                }
+            } else {
+                System.out.println("Date is required.");
+            }
+        }
+
+        System.out.print("Enter Event Location: ");
+        String location = scanner.nextLine();
+        while (location.trim().isEmpty()) {
+            System.out.print("Enter location Name (is Required): ");
+            location = scanner.nextLine();
+        }
+
+        System.out.print("Enter Event Type: ");
+        String type = scanner.nextLine();
+        while (type.trim().isEmpty()) {
+            System.out.print("Enter type Name (is Required): ");
+            type = scanner.nextLine();
+        }
+
+        Event event = new Event(name, date, location, type);
+        eventService.addEvent(event);
+        System.out.println("Event added successfully.");
     }
 
     private void searchEvents() {
@@ -380,8 +401,11 @@ public class ConsoleInterface {
         listEvents();
         System.out.print("Enter Event ID: ");
         int eventId = Integer.parseInt(scanner.nextLine());
-
-        registrationService.registerParticipantToEvent(eventId, participant_Id);
+        Event event = eventService.getEventById(eventId);
+        System.out.println("event" + event);
+        Participant participant = participantService.getParticipantById(participant_Id);
+        System.out.println("participant" + participant);
+        registrationService.registerParticipantToEvent(eventId, participant_Id, participant, event);
         System.out.println("Participant registered to event successfully.");
     }
 
@@ -406,6 +430,32 @@ public class ConsoleInterface {
         registrationService.removeParticipantEvents(eventId, participant_Id);
         System.out.println("event removed successfully.");
 
+    }
+
+    private void rapports() {
+        List<Registration> registrations = registrationService.listAllRegistrations();
+
+        System.out.println("1. Report");
+
+        String[] headers = { "Name Event", "Name Participants" };
+
+        String[][] data = new String[registrations.size()][2];
+
+        for (int i = 0; i < registrations.size(); i++) {
+            Registration registration = registrations.get(i);
+            data[i][0] = registration.getEvent().getName();
+            data[i][1] = registration.getParticipant().getName();
+        }
+
+        System.out.println("--------------------------------------------------");
+        System.out.printf("%-20s %-20s%n", headers[0], headers[1]);
+        System.out.println("--------------------------------------------------");
+
+        for (String[] row : data) {
+            System.out.printf("%-20s %-20s%n", row[0], row[1]);
+        }
+
+        System.out.println("--------------------------------------------------");
     }
 
 }

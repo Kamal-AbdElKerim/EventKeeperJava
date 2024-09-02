@@ -1,6 +1,8 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Date;
 
 public class EventService {
     private List<Event> events;
@@ -40,23 +42,35 @@ public class EventService {
     }
 
     public List<Event> searchEventsByCriteria(String date, String location, String type) {
-        System.out.println(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         return events.stream()
-                .filter(event -> (date == null || event.getDate().toString().equals(date)) &&
-                        (location == null || event.getLocation().equals(location)) &&
-                        (type == null || event.getType().equals(type)))
+                .filter(event -> {
+                    boolean dateMatches = true;
+                    if (date != null) {
+                        try {
+                            Date parsedDate = dateFormat.parse(date);
+                            dateMatches = event.getDate().equals(parsedDate);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            dateMatches = false;
+                        }
+                    }
+                    return dateMatches &&
+                            (location == null || event.getLocation().equals(location)) &&
+                            (type == null || event.getType().equals(type));
+                })
                 .collect(Collectors.toList());
     }
 
     public List<Event> listEvents() {
         return new ArrayList<>(events);
     }
-    
+
     public List<Event> filterEventsById(List<Integer> eventIds) {
         return events.stream()
-                     .filter(event -> eventIds.contains(event.getId()))
-                     .collect(Collectors.toList());
+                .filter(event -> eventIds.contains(event.getId()))
+                .collect(Collectors.toList());
     }
-    
-    
+
 }

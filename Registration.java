@@ -1,10 +1,14 @@
 public class Registration {
     private int eventId;
     private int participantId;
+    private Participant participant;
+    private Event event;
 
-    public Registration(int eventId, int participantId) {
+    public Registration(int eventId, int participantId, Participant participant, Event event) {
         this.eventId = eventId;
         this.participantId = participantId;
+        this.participant = participant;
+        this.event = event;
     }
 
     public int getEventId() {
@@ -15,8 +19,17 @@ public class Registration {
         return participantId;
     }
 
+    public Participant getParticipant() {
+        return participant;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
     @Override
     public String toString() {
-        return "Event ID: " + eventId + ", Participant ID: " + participantId;
+        return "Event: " + (event != null ? event.getName() : "Unknown") +
+               ", Participant: " + (participant != null ? participant.getName() : "Unknown");
     }
 }
