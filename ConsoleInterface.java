@@ -98,9 +98,9 @@ public class ConsoleInterface {
     private void RoleUser() {
         while (true) {
             System.out.println("Welcome User:");
-            System.out.println("1. Inscrire un participant à un événement");
-            System.out.println("2. Désinscrire un participant d'un événement");
-            System.out.println("3. Afficher les événements auxquels un participant est inscrit");
+            System.out.println("1. Register to event");
+            System.out.println("2. Unregister an event");
+            System.out.println("3. View events an attendee is registered for");
             System.out.println("4. Search Events");
             System.out.println("5. Logout");
             System.out.print("Choose an option : ");
@@ -419,7 +419,7 @@ public class ConsoleInterface {
 
         List<Event> filteredEvents = eventService.filterEventsById(new ArrayList<>(uniqueEventIds));
 
-        System.out.println("Events for you : " + filteredEvents);
+        System.out.println("Events for you : \n " + filteredEvents);
 
     }
 

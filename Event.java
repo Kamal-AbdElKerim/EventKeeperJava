@@ -8,7 +8,7 @@ public class Event {
     private String location;
     private String type;
 
-    static int IDEvent = 1 ;
+    static int IDEvent = 1;
 
     public Event(String name, Date date, String location, String type) {
         this.id = IDEvent;
@@ -57,18 +57,18 @@ public class Event {
 
     @Override
     public String toString() {
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = sdf.format(date);
 
-        return 
-                id + "-" +
-                " name= " + name + 
-                " , date= " + formattedDate +
-                " , location= " + location  +
-                " , type= " + type ;
-                
-    }
+        return String.format(
+                "-------------------------------\n" +
+                        "ID:        %s\n" +
+                        "Name:      %s\n" +
+                        "Date:      %s\n" +
+                        "Location:  %s\n" +
+                        "Type:      %s\n" +
+                        "-------------------------------\n",
+                id, name, formattedDate, location, type);
 
-    
+    }
 }

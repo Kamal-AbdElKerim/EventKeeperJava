@@ -3,9 +3,9 @@ public class Participant {
     private String name;
     private String email;
 
-    static int count = 1 ;
+    static int count = 1;
 
-    public Participant( String name, String email) {
+    public Participant(String name, String email) {
         this.id = count;
         this.name = name;
         this.email = email;
@@ -34,11 +34,13 @@ public class Participant {
 
     @Override
     public String toString() {
-        return 
-                id + "-" +
-                " name= " + name + 
-                " , email= " + email ;
-            
-                
+        return String.format(
+                "-------------------------------\n" +
+                        "ID:      %s\n" +
+                        "Name:    %s\n" +
+                        "Email:   %s\n" +
+                        "-------------------------------",
+                id, name, email);
     }
+
 }
