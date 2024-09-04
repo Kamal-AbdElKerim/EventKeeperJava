@@ -25,4 +25,6 @@ Techniques :
 •	Base de Données :Structure en mémoire.
 
 Exemple de Menu Console : 
+![image](https://github.com/user-attachments/assets/d8e646a8-3031-40a8-a445-ebe28e2f7335)
+
  
