@@ -7,15 +7,18 @@ import java.util.Date;
 public class EventService {
     private List<Event> events;
 
+    // constructor
     public EventService() {
         this.events = new ArrayList<>();
     }
 
+    // Create and add events
     public void addEvent(Event event) {
         events.add(event);
         // System.out.println(events);
     }
 
+    // Update an event
     public void updateEvent(int eventId, Event updatedEvent) {
         for (Event event : events) {
             if (event.getId() == eventId) {
@@ -28,6 +31,7 @@ public class EventService {
         }
     }
 
+    // Get event by ID
     public Event getEventById(int eventId) {
         for (Event event : events) {
             if (event.getId() == eventId) {
@@ -37,10 +41,12 @@ public class EventService {
         return null;
     }
 
+    // Delete an event
     public void deleteEvent(int eventId) {
         events.removeIf(event -> event.getId() == eventId);
     }
 
+    // Search events by criteria
     public List<Event> searchEventsByCriteria(String date, String location, String type) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -63,10 +69,12 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    // List events
     public List<Event> listEvents() {
         return new ArrayList<>(events);
     }
 
+    // Filter events by ID
     public List<Event> filterEventsById(List<Integer> eventIds) {
         return events.stream()
                 .filter(event -> eventIds.contains(event.getId()))

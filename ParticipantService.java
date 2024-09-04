@@ -8,6 +8,7 @@ public class ParticipantService {
         this.participants = new ArrayList<>();
     }
 
+    // Login participant
     public Participant Login(String email) {
         for (Participant participant : participants) {
             if (participant.getEmail().equals(email)) {
@@ -17,10 +18,12 @@ public class ParticipantService {
         return null;
     }
 
+    // Add participants
     public void addParticipant(Participant participant) {
         participants.add(participant);
     }
 
+    // Update participant
     public void updateParticipant(int participantId, Participant updatedParticipant) {
         for (Participant participant : participants) {
             if (participant.getId() == participantId) {
@@ -31,10 +34,12 @@ public class ParticipantService {
         }
     }
 
+    // Delete a participant
     public void deleteParticipant(int participantId) {
         participants.removeIf(participant -> participant.getId() == participantId);
     }
 
+    // Get participant by ID
     public Participant getParticipantById(int participantId) {
         for (Participant participant : participants) {
             if (participant.getId() == participantId) {
@@ -44,10 +49,9 @@ public class ParticipantService {
         return null;
     }
 
+    // List participants
     public List<Participant> listParticipants() {
         return new ArrayList<>(participants);
     }
-
-
 
 }

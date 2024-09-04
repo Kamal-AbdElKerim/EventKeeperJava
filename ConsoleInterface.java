@@ -14,12 +14,14 @@ public class ConsoleInterface {
     private Scanner scanner;
     private int participant_Id;
 
+    // Constructor
     public ConsoleInterface() {
         this.eventService = new EventService();
         this.participantService = new ParticipantService();
         this.registrationService = new RegistrationService();
         this.scanner = new Scanner(System.in);
     }
+    // Main menu for role
 
     public void showMainMenu() {
         while (true) {
@@ -46,6 +48,7 @@ public class ConsoleInterface {
         }
 
     }
+    // Admin role dashboard for managing events
 
     private void RoleAdmin() {
 
@@ -77,6 +80,7 @@ public class ConsoleInterface {
         }
 
     }
+    // User authentication by email
 
     private void authentication() {
         System.out.print("Enter your email: ");
@@ -94,6 +98,7 @@ public class ConsoleInterface {
         this.participant_Id = participant.getId();
         RoleUser();
     }
+    // User role menu with options for event
 
     private void RoleUser() {
         while (true) {
@@ -127,6 +132,7 @@ public class ConsoleInterface {
             }
         }
     }
+    // Event management menu for admins
 
     private void manageEvents() {
         while (true) {
@@ -164,6 +170,7 @@ public class ConsoleInterface {
             }
         }
     }
+    // Participant management menu for admins
 
     private void manageParticipants() {
         while (true) {
@@ -196,6 +203,7 @@ public class ConsoleInterface {
             }
         }
     }
+    // Update event's details
 
     private void updateEvent() {
         listEvents();
@@ -261,6 +269,7 @@ public class ConsoleInterface {
         }
 
     }
+    // Delete an event by ID
 
     private void deleteEvent() {
         listEvents();
@@ -269,12 +278,14 @@ public class ConsoleInterface {
         eventService.deleteEvent(id);
         System.out.println("Event deleted successfully.");
     }
+    // List all available events
 
     private void listEvents() {
         List<Event> events = eventService.listEvents();
         System.out.println("List of events:");
         events.forEach(event -> System.out.println(event));
     }
+    // Add a new event
 
     private void addEvent() {
         System.out.print("Enter Event Name: ");
@@ -319,6 +330,7 @@ public class ConsoleInterface {
         eventService.addEvent(event);
         System.out.println("Event added successfully.");
     }
+    // Search for events
 
     private void searchEvents() {
         System.out.print("Enter Event Date (yyyy-MM-dd) [leave blank to skip]: ");
@@ -334,6 +346,7 @@ public class ConsoleInterface {
                 type.isEmpty() ? null : type);
         events.forEach(System.out::println);
     }
+    // Add a new participant
 
     private void addParticipant() {
 
@@ -354,6 +367,7 @@ public class ConsoleInterface {
         participantService.addParticipant(participant);
         System.out.println("Participant added successfully.");
     }
+    // Update participant's
 
     private void updateParticipant() {
         listParticipants();
@@ -383,6 +397,7 @@ public class ConsoleInterface {
         participantService.updateParticipant(id, updatedParticipant);
         System.out.println("Participant updated successfully.");
     }
+    // Delete a participant by ID
 
     private void deleteParticipant() {
         listParticipants();
@@ -391,12 +406,14 @@ public class ConsoleInterface {
         participantService.deleteParticipant(id);
         System.out.println("Participant deleted successfully.");
     }
+    // List all participants
 
     private void listParticipants() {
         List<Participant> participants = participantService.listParticipants();
         participants.forEach(System.out::println);
     }
 
+    // register Participant
     private void registerParticipant() {
         listEvents();
         System.out.print("Enter Event ID: ");
@@ -409,6 +426,7 @@ public class ConsoleInterface {
         System.out.println("Participant registered to event successfully.");
     }
 
+    // list Events For Participant
     private void listEventsForParticipant() {
 
         List<Registration> registrations = registrationService.listParticipantEvents(participant_Id);
@@ -423,6 +441,7 @@ public class ConsoleInterface {
 
     }
 
+    // remove Participant Events
     private void removeParticipantEvents() {
         listEventsForParticipant();
         System.out.print("Enter Event ID: ");
@@ -432,32 +451,36 @@ public class ConsoleInterface {
 
     }
 
+    // rapports
     private void rapports() {
         List<Registration> registrations = registrationService.listAllRegistrations();
-    
+
         System.out.println("1. Report");
-    
+
         String[] headers = { "Name Event", "Date Event", "Name Participants", "Email Participants" };
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    
+
         String[][] data = new String[registrations.size()][4];
-    
+
         for (int i = 0; i < registrations.size(); i++) {
             Registration registration = registrations.get(i);
             data[i][0] = registration.getEvent().getName();
-            data[i][1] = dateFormat.format(registration.getEvent().getDate()); 
+            data[i][1] = dateFormat.format(registration.getEvent().getDate());
             data[i][2] = registration.getParticipant().getName();
             data[i][3] = registration.getParticipant().getEmail();
         }
-    
-        System.out.println("---------------------------------------------------------------------------------------------------");
+
+        System.out.println(
+                "---------------------------------------------------------------------------------------------------");
         System.out.printf("%-20s %-15s %-20s %-30s%n", headers[0], headers[1], headers[2], headers[3]);
-        System.out.println("---------------------------------------------------------------------------------------------------");
-    
+        System.out.println(
+                "---------------------------------------------------------------------------------------------------");
+
         for (String[] row : data) {
             System.out.printf("%-20s %-15s %-20s %-30s%n", row[0], row[1], row[2], row[3]);
         }
-    
-        System.out.println("---------------------------------------------------------------------------------------------------");
+
+        System.out.println(
+                "---------------------------------------------------------------------------------------------------");
     }
 }
