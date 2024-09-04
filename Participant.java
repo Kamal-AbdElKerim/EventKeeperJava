@@ -36,7 +36,7 @@ public class Participant {
     public String toString() {
         return String.format(
                 "-------------------------------\n" +
-                        "ID:      %s\n" +
+                        "ID:      %d\n" +
                         "Name:    %s\n" +
                         "Email:   %s\n" +
                         "-------------------------------",

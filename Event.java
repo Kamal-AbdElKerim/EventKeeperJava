@@ -62,7 +62,7 @@ public class Event {
 
         return String.format(
                 "-------------------------------\n" +
-                        "ID:        %s\n" +
+                        "ID:        %d\n" +
                         "Name:      %s\n" +
                         "Date:      %s\n" +
                         "Location:  %s\n" +
